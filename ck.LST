@@ -1,0 +1,189 @@
+A51 MACRO ASSEMBLER  CK                                                                   09/03/2019 12:36:24 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.01
+OBJECT MODULE PLACED IN ck.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE ck.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1                     org     00h
+0000 7C00              2                     mov     r4,#00h ;// sec reg
+0002 7D00              3                     mov     r5,#00h ;//min reg
+0004 7E00              4                     mov     r6,#00h ;//hour reg
+0006 EE                5     start:  mov     a,r6  ;//copy content of r6 into accumulater  a=00h
+0007 118C              6                     acall seven_seg  
+0009 F590              7                     mov     p1,a     
+000B 20800E            8                     jb      p0.0,kk2  
+000E 0E                9                     inc     r6
+000F BE0D02           10                     cjne    r6,#0dh,kk1     ;// check r6 =13 ,if yes r6=1 else jump to kk1 
+0012 7E01             11                     mov     r6,#01h
+0014 1180             12     kk1:    acall delay
+0016 1180             13                     acall delay     
+0018 1180             14                     acall delay
+001A 80EA             15                     sjmp    start  
+                      16     
+001C 208106           17     kk2:    jb      p0.1,cj1 
+001F 1180             18                     acall delay     
+0021 1180             19                     acall delay
+0023 8005             20                     sjmp    next1
+0025 2082DE           21     cj1:    jb      p0.2,start               
+0028 8025             22                     sjmp    exe
+                      23     
+                      24     
+002A ED               25     next1:  mov     a,r5 ;//copy content of r5 into accumulater  a=00h
+002B 75F00A           26                     mov     b,#0ah  ; load b register with 10
+002E 84               27                     div     ab
+002F 118C             28                     acall seven_seg  
+0031 F5A0             29                     mov     p2,a
+0033 E5F0             30                     mov     a,b
+0035 118C             31                     acall seven_seg  
+0037 F5B0             32                     mov     p3,a
+0039 20800E           33                     jb      p0.0,cj11  
+003C 0D               34                     inc     r5
+003D BD3C02           35                     cjne    r5,#3ch,kk11  
+0040 7D00             36                     mov     r5,#00h
+0042 1180             37     kk11:           acall delay
+0044 1180             38                     acall delay     
+0046 1180             39                     acall delay
+0048 80E0             40                     sjmp    next1
+                      41     
+                      42     
+004A 2082DD           43     cj11:   jb      p0.2,next1               
+004D 8000             44                     sjmp    exe
+                      45     
+                      46     
+004F 7C3C             47     exe:     mov    r4,#3ch   
+0051                  48     t11:     
+0051 1180             49                     call    delay
+0053 D2A7             50                     setb    p2.7
+0055 1180             51                     call    delay  
+                      52             
+0057 C2A7             53                     clr             p2.7
+0059 DCF6             54                     djnz    r4,t11  ; decrement and jump  to t11 till r4=0
+005B 0D               55                     inc     r5         
+005C BD3C0A           56                     cjne    r5,#3ch,t12        
+005F 7D00             57                     mov     r5,#00h
+0061 0E               58                     inc     r6
+A51 MACRO ASSEMBLER  CK                                                                   09/03/2019 12:36:24 PAGE     2
+
+0062 BE0D04           59                     cjne    r6,#0dh,t12
+0065 7E01             60                     mov     r6,#01h
+0067 7D00             61                 mov r5,#00h
+0069 ED               62      t12:   mov     a,r5              
+006A 75F00A           63                     mov     b,#0ah           
+006D 84               64                     div     ab                          
+006E 118C             65                     acall seven_seg  
+0070 F5A0             66                     mov     p2,a               
+0072 E5F0             67                     mov     a,b                              
+0074 118C             68                     acall seven_seg    
+0076 F5B0             69                     mov     p3,a                     
+0078 EE               70                     mov     a,r6                     
+0079 118C             71                     acall seven_seg
+007B F590             72                     mov     p1,a                     
+007D 02004F           73                     ljmp    exe
+0080                  74     delay :
+0080 7AC4             75                      MOV R2, #196
+0082 7BFF             76         L2: MOV R3, #255
+0084 00               77         L1: NOP;
+0085 00               78              NOP;
+0086 00               79              NOP;
+0087 DBFB             80                      DJNZ R3, L1;
+0089 DAF7             81                      DJNZ R2, L2; 
+008B 22               82                      RET
+008C B40003           83     seven_seg:      cjne    a,#00h,b11  
+008F 74C0             84                             mov     a,#0c0h
+0091 22               85                             ret
+0092 B40103           86             b11:    cjne    a,#01,b12
+0095 74F9             87                             mov     a,#0f9h
+0097 22               88                             ret
+0098 B40203           89             b12:       cjne a,#     02h     ,b13
+009B 74A4             90                             mov     a,#0a4h
+009D 22               91                             ret
+009E B40303           92                     b13:       cjne a,#03h,b14
+00A1 74B0             93                             mov     a,#0b0h
+00A3 22               94                             ret
+                      95             
+00A4 B40403           96                     b14:       cjne a,#04h,b15
+00A7 7499             97                             mov     a,#99h
+00A9 22               98                             ret
+                      99             
+00AA B40503          100                     b15:       cjne a,#05h,b16
+00AD 7492            101                             mov     a,#92h
+00AF 22              102                             ret
+                     103             
+00B0 B40603          104                     b16:       cjne a,#06h,b17
+00B3 7482            105                             mov     a,#82h
+00B5 22              106                             ret
+00B6 B40703          107                     b17:       cjne a,#07h,b18
+00B9 74F8            108                             mov     a,#0f8h
+00BB 22              109                             ret
+00BC B40803          110                     b18: cjne       a,#     08h     ,b19
+00BF 7480            111                             mov     a,#80h
+00C1 22              112                             ret
+00C2 B40903          113                     b19:cjne        a,#09h  ,b20
+00C5 7490            114                             mov     a,#90h
+00C7 22              115                             ret
+00C8 B40A03          116                     b20:       cjne a,#0ah,b21
+00CB 7440            117                             mov     a,#40h
+00CD 22              118                             ret
+00CE B40B03          119                     b21:       cjne a,#0bh,b22
+00D1 7479            120                             mov     a,#79h
+00D3 22              121                             ret
+00D4 B40C03          122                     b22: cjne       a,#0ch,b23
+00D7 7424            123                             mov     a,#24h
+00D9 22              124                             ret
+A51 MACRO ASSEMBLER  CK                                                                   09/03/2019 12:36:24 PAGE     3
+
+00DA B40D02          125                     b23:cjne        a,#0dh,b24
+00DD 7430            126                         mov a,#30h
+00DF 22              127                     b24:    ret
+                     128                     
+                     129                     end
+A51 MACRO ASSEMBLER  CK                                                                   09/03/2019 12:36:24 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+B. . . . . . . . .  D ADDR   00F0H   A   
+B11. . . . . . . .  C ADDR   0092H   A   
+B12. . . . . . . .  C ADDR   0098H   A   
+B13. . . . . . . .  C ADDR   009EH   A   
+B14. . . . . . . .  C ADDR   00A4H   A   
+B15. . . . . . . .  C ADDR   00AAH   A   
+B16. . . . . . . .  C ADDR   00B0H   A   
+B17. . . . . . . .  C ADDR   00B6H   A   
+B18. . . . . . . .  C ADDR   00BCH   A   
+B19. . . . . . . .  C ADDR   00C2H   A   
+B20. . . . . . . .  C ADDR   00C8H   A   
+B21. . . . . . . .  C ADDR   00CEH   A   
+B22. . . . . . . .  C ADDR   00D4H   A   
+B23. . . . . . . .  C ADDR   00DAH   A   
+B24. . . . . . . .  C ADDR   00DFH   A   
+CJ1. . . . . . . .  C ADDR   0025H   A   
+CJ11 . . . . . . .  C ADDR   004AH   A   
+DELAY. . . . . . .  C ADDR   0080H   A   
+EXE. . . . . . . .  C ADDR   004FH   A   
+KK1. . . . . . . .  C ADDR   0014H   A   
+KK11 . . . . . . .  C ADDR   0042H   A   
+KK2. . . . . . . .  C ADDR   001CH   A   
+L1 . . . . . . . .  C ADDR   0084H   A   
+L2 . . . . . . . .  C ADDR   0082H   A   
+NEXT1. . . . . . .  C ADDR   002AH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+SEVEN_SEG. . . . .  C ADDR   008CH   A   
+START. . . . . . .  C ADDR   0006H   A   
+T11. . . . . . . .  C ADDR   0051H   A   
+T12. . . . . . . .  C ADDR   0069H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
